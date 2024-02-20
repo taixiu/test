@@ -1,0 +1,16 @@
+
+---
+- name: Update and Upgrade Kubernetes Nodes
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: yes
+        autoremove: yes
+        autoclean: yes
