@@ -1,16 +1,18 @@
-
 ---
-- name: Update and Upgrade Kubernetes Nodes
+- name: Reboot Kubernetes Nodes
   hosts: all
   become: true
 
   tasks:
-    - name: Update APT package cache
-      apt:
-        update_cache: yes
+    - name: Drain Kubernetes node
+      command: kubectl drain {{ inventory_hostname }} --ignore-daemonsets --delete-local-data --force
+      ignore_errors: yes
 
-    - name: Upgrade all packages
-      apt:
-        upgrade: yes
-        autoremove: yes
-        autoclean: yes
+    - name: Reboot server
+      reboot:
+      
+    - name: Wait for node to become ready
+      command: kubectl wait node/{{ inventory_hostname }} --for=condition=Ready --timeout=300s
+
+    - name: Uncordon Kubernetes node
+      command: kubectl uncordon {{ inventory_hostname }}
