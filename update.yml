@@ -1,7 +1,7 @@
 
 ---
 - name: Update and Upgrade Kubernetes Nodes
-  hosts: k8s_cluster
+  hosts: all
   become: true
 
   tasks:
